@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ထောင်လျှော့ရက် တွက်ချက်ရန်</title>
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f9; }
-        .container { max-width: 400px; margin: 0 auto; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        body { font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f9; line-height: 1.5; }
+        .container { max-width: 450px; margin: 0 auto; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         h2 { text-align: center; color: #2c3e50; font-size: 20px;}
         label { display: block; margin-top: 15px; font-weight: bold; color: #34495e; font-size: 14px;}
         input { width: 100%; padding: 10px; margin-top: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 5px; }
@@ -15,11 +15,14 @@
         .result { margin-top: 25px; padding: 15px; background-color: #e8f8f5; border-left: 5px solid #1abc9c; border-radius: 4px;}
         .result p { margin: 10px 0; font-size: 15px; color: #2c3e50;}
         .highlight { color: #c0392b; font-size: 18px; font-weight: bold; display: block; margin-top: 5px;}
+        .disclaimer { margin-top: 25px; padding: 15px; background-color: #fdedec; border: 1px solid #fadbd8; border-radius: 5px; font-size: 12px; color: #7b241c; text-align: justify; }
+        .disclaimer strong { display: block; margin-bottom: 8px; font-size: 13px;}
     </style>
 </head>
 <body>
     <div class="container">
         <h2>ထောင်လျှော့ရက် ခန့်မှန်းတွက်ချက်ရန်</h2>
+        
         <label>ရဲဖမ်းရက် (လ/ရက်/ခုနှစ်)</label>
         <input type="date" id="arrestDate">
 
@@ -37,7 +40,13 @@
         <div class="result" id="resultBox" style="display:none;">
             <p><b>မူလလွတ်မည့်ရက်:</b> <br><span id="outOriginal"></span></p>
             <p><b>ခန့်မှန်း လွတ်မည့်ရက်စွဲ:</b> <span class="highlight" id="outEstimated"></span></p>
-            <p style="font-size: 11px; color: #7f8c8d; margin-top: 15px;">* ဤရလဒ်သည် ခန့်မှန်းတွက်ချက်မှုသာဖြစ်ပြီး အမှန်တကယ် လွတ်ရက်နှင့် (၂)ရက် မှ (၅)ရက်ခန့် ကွာဟနိုင်ပါသည်။</p>
+            <p style="font-size: 11px; color: #7f8c8d; margin-top: 15px;">* ဤရလဒ်သည် အမှန်တကယ် လွတ်ရက်နှင့် (၂)ရက် မှ (၅)ရက်ခန့် ကွာဟနိုင်ပါသည်။</p>
+        </div>
+
+        <div class="disclaimer">
+            <strong>⚠️ အထူးသတိပေးချက် (Disclaimer)</strong>
+            ဤတွက်ချက်မှု ရလဒ်များသည် ခန့်မှန်းခြေသာဖြစ်ပြီး အမှန်တကယ် လွတ်မြောက်မည့် ရက်စွဲများနှင့် ကွဲလွဲချက်များ ရှိနိုင်ပါသည်။ အများပြည်သူများ အကြမ်းဖျဉ်း တွက်ချက်ခန့်မှန်းနိုင်စေရန် ရည်ရွယ်၍ စေတနာသက်သက်ဖြင့် ဖန်တီးထားခြင်းသာ ဖြစ်ပါသည်။ <br><br>
+            ထို့ကြောင့် ဤတွက်ချက်မှုကို အသုံးပြုခြင်းကြောင့် နောက်ကွယ်တွင် ဖြစ်ပေါ်လာနိုင်သော မည်သည့် ပြဿနာများကိုမဆို ဖန်တီးသူအနေဖြင့် တာဝန်ယူမည် မဟုတ်ကြောင်းနှင့် အသုံးပြုသူများအနေဖြင့် မိမိ၏ ကိုယ်ပိုင်ဆုံးဖြတ်ချက်၊ တာဝန်ယူမှုတို့ဖြင့်သာ အသုံးပြုကြပါရန် အသိပေးအပ်ပါသည်။
         </div>
     </div>
 

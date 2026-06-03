@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ထောင်လျှော့ရက် တွက်ချက်ရန်</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f9; }
+        .container { max-width: 400px; margin: 0 auto; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #2c3e50; font-size: 20px;}
+        label { display: block; margin-top: 15px; font-weight: bold; color: #34495e; font-size: 14px;}
+        input { width: 100%; padding: 10px; margin-top: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 5px; }
+        button { width: 100%; padding: 12px; margin-top: 25px; background-color: #2980b9; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold;}
+        button:hover { background-color: #21618c; }
+        .result { margin-top: 25px; padding: 15px; background-color: #e8f8f5; border-left: 5px solid #1abc9c; border-radius: 4px;}
+        .result p { margin: 10px 0; font-size: 15px; color: #2c3e50;}
+        .highlight { color: #c0392b; font-size: 18px; font-weight: bold; display: block; margin-top: 5px;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>ထောင်လျှော့ရက် ခန့်မှန်းတွက်ချက်ရန်</h2>
+        <label>ရဲဖမ်းရက် (လ/ရက်/ခုနှစ်)</label>
+        <input type="date" id="arrestDate">
+
+        <label>အမိန့်ချရက် (လ/ရက်/ခုနှစ်)</label>
+        <input type="date" id="sentenceDate">
+
+        <label>ပြစ်ဒဏ်ကာလ (နှစ်)</label>
+        <input type="number" id="years" value="0" min="0">
+
+        <label>ပြစ်ဒဏ်ကာလ (လ) - မရှိပါက 0 ထားပါ</label>
+        <input type="number" id="months" value="0" min="0">
+
+        <button onclick="calculate()">တွက်ချက်မည်</button>
+
+        <div class="result" id="resultBox" style="display:none;">
+            <p><b>မူလလွတ်မည့်ရက်:</b> <br><span id="outOriginal"></span></p>
+            <p><b>ခန့်မှန်း လွတ်မည့်ရက်စွဲ:</b> <span class="highlight" id="outEstimated"></span></p>
+            <p style="font-size: 11px; color: #7f8c8d; margin-top: 15px;">* ဤရလဒ်သည် ခန့်မှန်းတွက်ချက်မှုသာဖြစ်ပြီး အမှန်တကယ် လွတ်ရက်နှင့် (၂)ရက် မှ (၅)ရက်ခန့် ကွာဟနိုင်ပါသည်။</p>
+        </div>
+    </div>
+
+    <script>
+        function calculate() {
+            const arrest = new Date(document.getElementById('arrestDate').value);
+            const sentence = new Date(document.getElementById('sentenceDate').value);
+            const years = parseInt(document.getElementById('years').value) || 0;
+            const months = parseInt(document.getElementById('months').value) || 0;
+
+            if (isNaN(arrest.getTime()) || isNaN(sentence.getTime())) {
+                alert("ကျေးဇူးပြု၍ ရဲဖမ်းရက် နှင့် အမိန့်ချရက်များကို ပြည့်စုံစွာ ထည့်ပါ။");
+                return;
+            }
+
+            let originalRelease = new Date(arrest);
+            originalRelease.setMonth(originalRelease.getMonth() + (years * 12) + months);
+
+            const diffTime = originalRelease - sentence;
+            const remainingDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            let actualRemainingDays = 0;
+            if (remainingDays > 0) {
+                if (remainingDays <= 114.25) {
+                    actualRemainingDays = remainingDays * (91.25 / 114.25);
+                } else if (remainingDays <= 237.5) {
+                    actualRemainingDays = 91.25 + (remainingDays - 114.25) * (91.25 / 123.25);
+                } else {
+                    actualRemainingDays = 182.5 + (remainingDays - 237.5) * (91.25 / 132.25);
+                }
+            }
+
+            actualRemainingDays = Math.ceil(actualRemainingDays);
+
+            let estimatedRelease = new Date(sentence);
+            estimatedRelease.setDate(estimatedRelease.getDate() + actualRemainingDays);
+
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('outOriginal').innerText = originalRelease.toLocaleDateString('en-GB', options);
+            document.getElementById('outEstimated').innerText = estimatedRelease.toLocaleDateString('en-GB', options);
+            document.getElementById('resultBox').style.display = 'block';
+        }
+    </script>
+</body>
+</html>

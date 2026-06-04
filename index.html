@@ -1,29 +1,20 @@
 <!DOCTYPE html>
 <html lang="my">
 <head>
-	<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-SHGXGVGQCL"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-SHGXGVGQCL');
-</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ထောင်လျှော့ရက် နှင့် လွတ်ငြိမ်းခွင့် တွက်ချက်ရန်</title>
     <style>
         body { font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f9; line-height: 1.5; position: relative; }
         
-        /* ⚠️ Watermark Style (စခရင်ပေါ်တွင်ရော၊ Print ထုတ်ရာတွင်ပါ ပေါ်မည်) */
+        /* ⚠️ Watermark Style */
         .watermark {
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) rotate(-45deg);
             font-size: 40px;
-            color: rgba(0, 0, 0, 0.05); /* မှိန်မှိန်လေးသာ ပေါ်စေရန် */
+            color: rgba(0, 0, 0, 0.05);
             z-index: 1;
             pointer-events: none;
             white-space: nowrap;
@@ -52,12 +43,33 @@
         .highlight { color: #c0392b; font-size: 18px; font-weight: bold; display: block; margin-top: 5px;}
         .disclaimer { margin-top: 25px; padding: 15px; background-color: #fdedec; border: 1px solid #fadbd8; border-radius: 5px; font-size: 13px; color: #7b241c; text-align: justify; line-height: 1.6;}
         
-        .counter-box { text-align: center; margin-top: 20px; padding-top: 15px; border-top: 1px solid #eee; }
+        /* 🎨 Smart Minimalist Double Counters Styles */
+        .counter-wrapper { text-align: center; margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px; }
+        .counter-container { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+        .smart-counter {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background-color: #ffffff;
+            border: 1px solid #eaeaea;
+            padding: 8px 14px;
+            border-radius: 50px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            color: #555555;
+            font-size: 12px;
+            transition: all 0.3s ease;
+            cursor: default;
+        }
+        .smart-counter:hover {
+            border-color: #d1d5db;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transform: translateY(-1px);
+        }
+        .smart-counter svg { color: #2980b9; } 
+        .counter-number { font-weight: bold; color: #e74c3c; font-size: 14px; letter-spacing: 0.5px; }
 
-        /* Print Report အတွက် စာမျက်နှာ (ရိုးရိုးစခရင်တွင် ဖျောက်ထားမည်) */
+        /* Print Report အတွက် စာမျက်နှာ */
         #printSummary { display: none; }
-
-        /* 🖨️ Print ထုတ်သည့်အခါ ပြောင်းလဲမည့် ပုံစံများ */
         @media print {
             body { background-color: white; }
             .no-print { display: none !important; }
@@ -106,7 +118,6 @@
             <p><b>ခန့်မှန်း လွတ်မည့်ရက်စွဲ (အပြီးသတ်):</b> <span class="highlight" id="outEstimated"></span></p>
         </div>
 
-        <!-- 🖨️ Print နှင့် Reset ခလုတ်များ (ရလဒ်ထွက်မှသာ ပေါ်မည်) -->
         <button class="print-btn no-print" id="printBtn" style="display:none;" onclick="window.print()">🖨️ မှတ်တမ်းကို Print ထုတ်မည်</button>
         <button class="reset-btn no-print" id="resetBtn" style="display:none;" onclick="resetForm()">🔄 အသစ်ပြန်တွက်မည် (Clear All)</button>
 
@@ -123,20 +134,51 @@
             တွက်ချက်မှုအားလုံးကို အခမဲ့ လုပ်ဆောင်နိုင်ပြီး၊ ငွေကြေးတစ်စုံတစ်ရာ ကောက်ခံခြင်း လုံးဝ မရှိပါ။
         </div>
 
-        <div class="counter-box no-print">
-            <p style="margin:0; font-size: 13px; color: #7f8c8d;">အများပြည်သူ တွက်ချက်မှုပြုလုပ်ခဲ့သော စုစုပေါင်းအကြိမ်အရေအတွက်</p>
-            <span id="clickCounter" style="font-size: 24px; color: #e74c3c; font-weight: bold;">...</span>
+        <div class="counter-wrapper no-print">
+            <div class="counter-container">
+                <div class="smart-counter" title="စာမျက်နှာသို့ ဝင်ရောက်လာသူ အရေအတွက်">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                    <span>ဝင်ရောက်သူ:</span>
+                    <span class="counter-number" id="pageViewCounter">...</span>
+                </div>
+
+                <div class="smart-counter" title="အမှန်တကယ် တွက်ချက်ခဲ့သော အကြိမ်အရေအတွက်">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect>
+                        <line x1="8" y1="6" x2="16" y2="6"></line>
+                        <line x1="16" y1="14" x2="16" y2="18"></line>
+                        <path d="M16 10h.01"></path><path d="M12 10h.01"></path><path d="M8 10h.01"></path><path d="M12 14h.01"></path><path d="M8 14h.01"></path><path d="M12 18h.01"></path><path d="M8 18h.01"></path>
+                    </svg>
+                    <span>တွက်ချက်မှု:</span>
+                    <span class="counter-number" id="clickCounter">...</span>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        // Page စဖွင့်ဖွင့်ချင်းမှာ ရှိပြီးသား အရေအတွက်ကိုသာ ယူပြမည် (Count မတက်စေပါ)
+        // စာမျက်နှာ စတင်ပွင့်လာချိန်တွင် လုပ်ဆောင်မည့်စနစ်များ
         window.onload = function() {
-            const url = 'https://api.counterapi.dev/v1/mm_prison_calc/global_total_clicks?t=' + new Date().getTime();
-            fetch(url, { method: 'GET', cache: 'no-store' })
+            // ၁။ ဝင်ရောက်ကြည့်ရှုသူ Counter (စာမျက်နှာပွင့်တိုင်း 1 တိုးမည်)
+            const viewUrl = 'https://api.counterapi.dev/v1/mm_prison_calc/page_views/up?t=' + new Date().getTime();
+            fetch(viewUrl, { method: 'GET', cache: 'no-store' })
                 .then(response => response.json())
                 .then(data => {
-                    document.getElementById('clickCounter').innerText = data.count || 0;
+                    document.getElementById('pageViewCounter').innerText = data.count ? data.count.toLocaleString() : 0;
+                })
+                .catch(error => {
+                    document.getElementById('pageViewCounter').innerText = "0";
+                });
+
+            // ၂။ တွက်ချက်မှု Counter (လက်ရှိ အရေအတွက်ကိုသာ လှမ်းယူပြသမည်)
+            const clickUrl = 'https://api.counterapi.dev/v1/mm_prison_calc/global_total_clicks?t=' + new Date().getTime();
+            fetch(clickUrl, { method: 'GET', cache: 'no-store' })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('clickCounter').innerText = data.count ? data.count.toLocaleString() : 0;
                 })
                 .catch(error => {
                     document.getElementById('clickCounter').innerText = "0";
@@ -170,7 +212,6 @@
         }
 
         function calculate() {
-		gtag('event', 'calculate_button_clicked');
             const arrestStr = document.getElementById('arrestDate').value;
             const sentenceStr = document.getElementById('sentenceDate').value;
             const years = parseInt(document.getElementById('years').value) || 0;
@@ -184,22 +225,20 @@
                 return;
             }
 
-            // Global Counter ၁ ကြိမ် တက်စေမည့် စနစ်
+            // ခလုတ်နှိပ်ပါက "တွက်ချက်မှု Counter" ကို 1 တိုးမည်
             const countUrl = 'https://api.counterapi.dev/v1/mm_prison_calc/global_total_clicks/up?t=' + new Date().getTime();
             fetch(countUrl, { method: 'GET', cache: 'no-store' })
                 .then(response => response.json())
                 .then(data => {
-                    document.getElementById('clickCounter').innerText = data.count || 0;
+                    document.getElementById('clickCounter').innerText = data.count ? data.count.toLocaleString() : 0;
                 })
                 .catch(e => console.log('Counter error:', e));
 
-            // မူလလွတ်ရက် တွက်ခြင်း
             let originalRelease = new Date(arrest);
             originalRelease.setMonth(originalRelease.getMonth() + (years * 12) + months);
 
             let currentNominalRelease = new Date(originalRelease.getTime());
 
-            // လွတ်ငြိမ်းခွင့်များကို Date အစဉ်လိုက် ယူခြင်း
             let amnesties = [];
             let amnestyError = false;
             let amnestyPrintText = ""; 
@@ -271,7 +310,6 @@
             document.getElementById('outOriginal').innerText = outOrigStr;
             document.getElementById('outEstimated').innerText = outEstStr;
             
-            // 🖨️ Print ထုတ်ရန်အတွက် အချက်အလက်များ ပြင်ဆင်ခြင်း
             const arrestPrint = arrest.toLocaleDateString('en-GB', options);
             const sentencePrint = sentence.toLocaleDateString('en-GB', options);
             const penaltyStr = `${years} နှစ် ${months > 0 ? months + ' လ' : ''}`;
@@ -283,27 +321,25 @@
                 ${amnesties.length > 0 ? `<br><b>ရရှိခဲ့သော လွတ်ငြိမ်းခွင့်များ:</b><br>${amnestyPrintText}` : ''}
             `;
 
-            // ရလဒ်ပြကွက် နှင့် ခလုတ်များကို ဖော်ပြမည်
             document.getElementById('resultBox').style.display = 'block';
             document.getElementById('printBtn').style.display = 'block';
             document.getElementById('resetBtn').style.display = 'block';
         }
 
-        // 🔄 အသစ်ပြန်တွက်ရန် Data အားလုံးကို ရှင်းလင်းမည့် Function
         function resetForm() {
             document.getElementById('arrestDate').value = '';
             document.getElementById('sentenceDate').value = '';
             document.getElementById('years').value = '0';
             document.getElementById('months').value = '0';
             
-            document.getElementById('amnestyContainer').innerHTML = ''; // လွတ်ငြိမ်းခွင့် အကွက်များ ဖျက်မည်
+            document.getElementById('amnestyContainer').innerHTML = ''; 
             document.getElementById('printData').innerHTML = ''; 
             
-            document.getElementById('resultBox').style.display = 'none'; // ရလဒ်များကို ပြန်ဖျောက်မည်
+            document.getElementById('resultBox').style.display = 'none'; 
             document.getElementById('printBtn').style.display = 'none';
             document.getElementById('resetBtn').style.display = 'none';
             
-            window.scrollTo({ top: 0, behavior: 'smooth' }); // စာမျက်နှာ အပေါ်ဆုံးသို့ ပြန်ဆွဲတင်မည်
+            window.scrollTo({ top: 0, behavior: 'smooth' }); 
         }
     </script>
 </body>

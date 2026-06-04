@@ -4,6 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ထောင်လျှော့ရက် နှင့် လွတ်ငြိမ်းခွင့် တွက်ချက်ရန်</title>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SHGXGVGQCL"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-SHGXGVGQCL');
+    </script>
+
     <style>
         body { font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f9; line-height: 1.5; position: relative; }
         
@@ -223,6 +233,11 @@
             if (isNaN(arrest.getTime()) || isNaN(sentence.getTime())) {
                 alert("ကျေးဇူးပြု၍ ရဲဖမ်းရက် နှင့် အမိန့်ချရက်များကို ပြည့်စုံစွာ ထည့်ပါ။");
                 return;
+            }
+
+            // 🚀 Google Analytics: တွက်ချက်မှု ခလုတ်နှိပ်ခြင်းကို မှတ်သားမည်
+            if (typeof gtag === 'function') {
+                gtag('event', 'calculate_button_clicked');
             }
 
             // ခလုတ်နှိပ်ပါက "တွက်ချက်မှု Counter" ကို 1 တိုးမည်

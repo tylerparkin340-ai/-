@@ -3,69 +3,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ထောင်လျှော့ရက် တွက်ချက်ရန်</title>
+    <title>ထောင်လျှော့ရက် နှင့် လွတ်ငြိမ်းခွင့် တွက်ချက်ရန်</title>
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f9; line-height: 1.5; }
-        .container { max-width: 450px; margin: 0 auto; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        body { font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f9; line-height: 1.5; position: relative; }
+        
+        /* ⚠️ Watermark Style (စခရင်ပေါ်တွင်ရော၊ Print ထုတ်ရာတွင်ပါ ပေါ်မည်) */
+        .watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 40px;
+            color: rgba(0, 0, 0, 0.05); /* မှိန်မှိန်လေးသာ ပေါ်စေရန် */
+            z-index: 1;
+            pointer-events: none;
+            white-space: nowrap;
+            user-select: none;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .container { max-width: 480px; margin: 0 auto; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: relative; z-index: 2; }
         h2 { text-align: center; color: #2c3e50; font-size: 20px;}
         label { display: block; margin-top: 15px; font-weight: bold; color: #34495e; font-size: 14px;}
-        input { width: 100%; padding: 10px; margin-top: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 5px; }
-        button { width: 100%; padding: 12px; margin-top: 25px; background-color: #2980b9; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold;}
-        button:hover { background-color: #21618c; }
+        input, select { width: 100%; padding: 10px; margin-top: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 5px; }
+        
+        .amnesty-section { background: #fdfefe; border: 1px solid #d5dbdb; padding: 15px; border-radius: 8px; margin-top: 20px; }
+        .amnesty-row { background: #f4f6f7; padding: 15px; border-radius: 5px; margin-top: 10px; border-left: 4px solid #3498db;}
+        .remove-btn { width: auto; background-color: #e74c3c; padding: 8px 12px; margin-top: 10px; font-size: 12px; float: right; color: white; border:none; border-radius:3px; cursor: pointer;}
+        .add-btn { width: 100%; background-color: #27ae60; padding: 12px; margin-top: 15px; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: bold;}
+        .clear { clear: both; }
+
+        .calc-btn { width: 100%; padding: 12px; margin-top: 25px; background-color: #2980b9; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold;}
+        .print-btn { width: 100%; padding: 12px; margin-top: 15px; background-color: #8e44ad; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold;}
+
         .result { margin-top: 25px; padding: 15px; background-color: #e8f8f5; border-left: 5px solid #1abc9c; border-radius: 4px;}
         .result p { margin: 10px 0; font-size: 15px; color: #2c3e50;}
         .highlight { color: #c0392b; font-size: 18px; font-weight: bold; display: block; margin-top: 5px;}
-        .disclaimer { margin-top: 25px; padding: 15px; background-color: #fdedec; border: 1px solid #fadbd8; border-radius: 5px; font-size: 12px; color: #7b241c; text-align: justify; }
-        .disclaimer strong { display: block; margin-bottom: 8px; font-size: 13px;}
+        .disclaimer { margin-top: 25px; padding: 15px; background-color: #fdedec; border: 1px solid #fadbd8; border-radius: 5px; font-size: 13px; color: #7b241c; text-align: justify; line-height: 1.6;}
+        
+        .counter-box { text-align: center; margin-top: 20px; padding-top: 15px; border-top: 1px solid #eee; }
+
+        /* Print Report အတွက် စာမျက်နှာ (ရိုးရိုးစခရင်တွင် ဖျောက်ထားမည်) */
+        #printSummary { display: none; }
+
+        /* 🖨️ Print ထုတ်သည့်အခါ ပြောင်းလဲမည့် ပုံစံများ */
+        @media print {
+            body { background-color: white; }
+            .no-print { display: none !important; }
+            .container { box-shadow: none; border: none; padding: 0; margin: 0; max-width: 100%; }
+            #printSummary { display: block; margin-bottom: 20px; }
+            .watermark { color: rgba(0, 0, 0, 0.15) !important; font-size: 50px; z-index: 9999; } /* Print တွင် Watermark ကို အနည်းငယ်ပိုထင်းစေမည် */
+            .result { border: 1px solid #000; border-left: 5px solid #1abc9c; page-break-inside: avoid; }
+        }
     </style>
 </head>
 <body>
+    <div class="watermark">Developed by TYLER PARKIN</div>
+
     <div class="container">
-        <h2>ထောင်လျှော့ရက် ခန့်မှန်းတွက်ချက်ရန်</h2>
+        <h2 class="no-print">ထောင်လျှော့ရက် နှင့် လွတ်ငြိမ်းခွင့် ခန့်မှန်းတွက်ချက်ရန်</h2>
         
-        <label>ရဲဖမ်းရက် (လ/ရက်/ခုနှစ်)</label>
-        <input type="date" id="arrestDate">
-
-        <label>အမိန့်ချရက် (လ/ရက်/ခုနှစ်)</label>
-        <input type="date" id="sentenceDate">
-
-        <label>ပြစ်ဒဏ်ကာလ (နှစ်)</label>
-        <input type="number" id="years" value="0" min="0">
-
-        <label>ပြစ်ဒဏ်ကာလ (လ) - မရှိပါက 0 ထားပါ</label>
-        <input type="number" id="months" value="0" min="0">
-
-        <button onclick="calculate()">တွက်ချက်မည်</button>
-
-        <div class="result" id="resultBox" style="display:none;">
-            <p><b>မူလလွတ်မည့်ရက်:</b> <br><span id="outOriginal"></span></p>
-            <p><b>ခန့်မှန်း လွတ်မည့်ရက်စွဲ:</b> <span class="highlight" id="outEstimated"></span></p>
-            <p style="font-size: 11px; color: #7f8c8d; margin-top: 15px;">* ဤရလဒ်သည် အမှန်တကယ် လွတ်ရက်နှင့် (၂)ရက် မှ (၅)ရက်ခန့် ကွာဟနိုင်ပါသည်။</p>
+        <div id="printSummary">
+            <h2 style="text-align: center; border-bottom: 2px solid #2c3e50; padding-bottom: 10px;">ထောင်လျှော့ရက် တွက်ချက်မှု မှတ်တမ်း</h2>
+            <div id="printData" style="line-height: 2;"></div>
         </div>
 
-        <div class="disclaimer">
+        <div class="no-print">
+            <label>ရဲဖမ်းရက် (လ/ရက်/ခုနှစ်)</label>
+            <input type="date" id="arrestDate">
+
+            <label>အမိန့်ချရက် (လ/ရက်/ခုနှစ်)</label>
+            <input type="date" id="sentenceDate">
+
+            <label>ပြစ်ဒဏ်ကာလ (နှစ်)</label>
+            <input type="number" id="years" value="0" min="0">
+
+            <label>ပြစ်ဒဏ်ကာလ (လ) - မရှိပါက 0 ထားပါ</label>
+            <input type="number" id="months" value="0" min="0">
+
+            <div class="amnesty-section">
+                <h3 style="margin: 0 0 10px 0; font-size: 16px; color: #2c3e50;">လွတ်ငြိမ်းသက်သာခွင့်များ (ရှိပါက)</h3>
+                <div id="amnestyContainer"></div>
+                <button class="add-btn" onclick="addAmnesty()">+ လွတ်ငြိမ်းခွင့် အသစ်ထည့်မည်</button>
+            </div>
+
+            <button class="calc-btn" onclick="calculate()">ရလဒ် တွက်ချက်မည်</button>
+        </div>
+
+        <div class="result" id="resultBox" style="display:none;">
+            <p><b>မူလလွတ်မည့်ရက် (လွတ်ငြိမ်းမပါ):</b> <br><span id="outOriginal"></span></p>
+            <p><b>ခန့်မှန်း လွတ်မည့်ရက်စွဲ (အပြီးသတ်):</b> <span class="highlight" id="outEstimated"></span></p>
+        </div>
+
+        <button class="print-btn no-print" id="printBtn" style="display:none;" onclick="window.print()">🖨️ မှတ်တမ်းကို Print ထုတ်မည်</button>
+
+        <div class="disclaimer no-print">
             <strong>⚠️ အထူးသတိပေးချက် (Disclaimer)</strong>
-            ဤတွက်ချက်မှု ရလဒ်များသည် ခန့်မှန်းခြေသာဖြစ်ပြီး အမှန်တကယ် လွတ်မြောက်မည့် ရက်စွဲများနှင့် ကွဲလွဲချက်များ ရှိနိုင်ပါသည်။ အများပြည်သူများ အကြမ်းဖျဉ်း တွက်ချက်ခန့်မှန်းနိုင်စေရန် ရည်ရွယ်၍ စေတနာသက်သက်ဖြင့် ဖန်တီးထားခြင်းသာ ဖြစ်ပါသည်။ <br><br>
-            ထို့ကြောင့် ဤတွက်ချက်မှုကို အသုံးပြုခြင်းကြောင့် နောက်ကွယ်တွင် ဖြစ်ပေါ်လာနိုင်သော မည်သည့် ပြဿနာများကိုမဆို ဖန်တီးသူအနေဖြင့် တာဝန်ယူမည် မဟုတ်ကြောင်းနှင့် အသုံးပြုသူများအနေဖြင့် မိမိ၏ ကိုယ်ပိုင်ဆုံးဖြတ်ချက်၊ တာဝန်ယူမှုတို့ဖြင့်သာ အသုံးပြုကြပါရန် အသိပေးအပ်ပါသည်။
+            ဤတွက်ချက်မှုသည် အစိုးရမဟုတ်သော ပြင်ပ Freelance တစ်ယောက်၏ ဖန်တီးမှုသာဖြစ်ပြီး၊ ကွဲလွဲမှုတစ်စုံတစ်ရာ ရှိလာခဲ့ပါက <b>အကျဉ်းဦးစီးဌာန၏ တွက်ချက်မှုသာ အတည်</b>ဖြစ်ပါသည်။ <br><br>
+            ဤတွက်ချက်မှုသည် ပြင်ပတွင် ကျန်ရှိခဲ့သော မိသားစုများ စိတ်သက်သာရာ ရရှိနိုင်ရန်နှင့် မိမိတို့ မိသားစုဝင် မည်သည့်အချိန်တွင် ပြန်လာနိုင်မည်ကို အကြမ်းဖျဉ်း ခန့်မှန်းတွက်ချက်နိုင်ရန်အတွက်သာ ရည်ရွယ်ပါသည်။ တရားဝင် စာရွက်စာတမ်းအနေဖြင့်သော်လည်းကောင်း၊ အခြားရည်ရွယ်ချက် တစ်ခုခုဖြင့်သော်လည်းကောင်း အသုံးပြုရန် မဟုတ်ပါ။ <br><br>
+            တွက်ချက်မှုအားလုံးကို အခမဲ့ လုပ်ဆောင်နိုင်ပြီး၊ ငွေကြေးတစ်စုံတစ်ရာ ကောက်ခံခြင်း လုံးဝ မရှိပါ။
+        </div>
+
+        <div class="counter-box no-print">
+            <p style="margin:0; font-size: 13px; color: #7f8c8d;">တွက်ချက်မှု ပြုလုပ်ခဲ့သော အကြိမ်အရေအတွက်</p>
+            <span id="clickCounter" style="font-size: 24px; color: #e74c3c; font-weight: bold;">...</span>
         </div>
     </div>
 
     <script>
+        // Page စဖွင့်ဖွင့်ချင်းမှာ ရှိပြီးသား အရေအတွက်ကိုသာ ယူပြမည် (Count မတက်စေပါ)
+        window.onload = function() {
+            fetch('https://api.counterapi.dev/v1/tylerparkin_prisoncalc/calc_clicks')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('clickCounter').innerText = data.count || 0;
+                })
+                .catch(error => {
+                    document.getElementById('clickCounter').innerText = "0";
+                });
+        };
+
+        function addAmnesty() {
+            const container = document.getElementById('amnestyContainer');
+            const row = document.createElement('div');
+            row.className = 'amnesty-row';
+            row.innerHTML = `
+                <label style="margin-top:0;">လွတ်ငြိမ်းခွင့်ရသည့် ရက်စွဲ</label>
+                <input type="date" class="a-date">
+                
+                <label>လျှော့ပေါ့မည့် ပုံစံ</label>
+                <select class="a-type">
+                    <option value="remaining">ကျန်ရှိပြစ်ဒဏ်မှ (Remaining)</option>
+                    <option value="total">ပြစ်ဒဏ်အားလုံးမှ (Total)</option>
+                </select>
+
+                <label>လျှော့ပေါ့မည့် ပမာဏ</label>
+                <select class="a-frac">
+                    <option value="1/4">၁/၄ (လေးပုံ တစ်ပုံ)</option>
+                    <option value="1/6">၁/၆ (ခြောက်ပုံ တစ်ပုံ)</option>
+                </select>
+                
+                <button class="remove-btn no-print" onclick="this.parentElement.remove()">ဖယ်ရှားမည်</button>
+                <div class="clear"></div>
+            `;
+            container.appendChild(row);
+        }
+
         function calculate() {
-            const arrest = new Date(document.getElementById('arrestDate').value);
-            const sentence = new Date(document.getElementById('sentenceDate').value);
+            const arrestStr = document.getElementById('arrestDate').value;
+            const sentenceStr = document.getElementById('sentenceDate').value;
             const years = parseInt(document.getElementById('years').value) || 0;
             const months = parseInt(document.getElementById('months').value) || 0;
+
+            const arrest = new Date(arrestStr);
+            const sentence = new Date(sentenceStr);
 
             if (isNaN(arrest.getTime()) || isNaN(sentence.getTime())) {
                 alert("ကျေးဇူးပြု၍ ရဲဖမ်းရက် နှင့် အမိန့်ချရက်များကို ပြည့်စုံစွာ ထည့်ပါ။");
                 return;
             }
 
+            // ⚠️ ရလဒ်တွက်ချက်မည် ခလုတ်နှိပ်မှသာ Counter ၁ ကြိမ် တက်စေမည့် စနစ်
+            fetch('https://api.counterapi.dev/v1/tylerparkin_prisoncalc/calc_clicks/up')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('clickCounter').innerText = data.count || 0;
+                })
+                .catch(e => console.log('Counter error:', e));
+
+            // မူလလွတ်ရက် တွက်ခြင်း
             let originalRelease = new Date(arrest);
             originalRelease.setMonth(originalRelease.getMonth() + (years * 12) + months);
 
-            const diffTime = originalRelease - sentence;
+            let currentNominalRelease = new Date(originalRelease.getTime());
+
+            // လွတ်ငြိမ်းခွင့်များကို Date အစဉ်လိုက် ယူခြင်း
+            let amnesties = [];
+            let amnestyError = false;
+            let amnestyPrintText = ""; // Print ထုတ်ရန် မှတ်တမ်း
+            
+            document.querySelectorAll('.amnesty-row').forEach((row, index) => {
+                let aDate = new Date(row.querySelector('.a-date').value);
+                let aType = row.querySelector('.a-type').value;
+                let aFracStr = row.querySelector('.a-frac').value;
+                let aFrac = (aFracStr === '1/4') ? 0.25 : (1/6);
+                
+                if (isNaN(aDate.getTime())) {
+                    amnestyError = true;
+                } else {
+                    amnesties.push({ date: aDate, type: aType, frac: aFrac });
+                    const typeText = aType === 'remaining' ? "ကျန်ရှိပြစ်ဒဏ်မှ" : "ပြစ်ဒဏ်အားလုံးမှ";
+                    amnestyPrintText += `လွတ်ငြိမ်းခွင့် (${index + 1}) - ${aDate.toLocaleDateString('en-GB')} [${typeText} ${aFracStr}]<br>`;
+                }
+            });
+
+            if (amnestyError) {
+                alert("ကျေးဇူးပြု၍ လွတ်ငြိမ်းခွင့်ရက်စွဲများကို ပြည့်စုံစွာထည့်ပါ။ မလိုပါက 'ဖယ်ရှားမည်' ကိုနှိပ်ပါ။");
+                return;
+            }
+
+            amnesties.sort((a, b) => a.date - b.date);
+
+            amnesties.forEach(amn => {
+                let reductionDays = 0;
+                if (amn.type === 'total') {
+                    let totalCurrentDays = (currentNominalRelease - arrest) / (1000 * 60 * 60 * 24);
+                    if(totalCurrentDays > 0) reductionDays = totalCurrentDays * amn.frac;
+                } else if (amn.type === 'remaining') {
+                    let remainingAtAmnesty = (currentNominalRelease - amn.date) / (1000 * 60 * 60 * 24);
+                    if (remainingAtAmnesty > 0) reductionDays = remainingAtAmnesty * amn.frac;
+                }
+                currentNominalRelease.setDate(currentNominalRelease.getDate() - reductionDays);
+            });
+
+            const diffTime = currentNominalRelease - sentence;
             const remainingDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
             let actualRemainingDays = 0;
@@ -83,19 +235,37 @@
 
             let estimatedRelease = new Date(sentence);
             estimatedRelease.setDate(estimatedRelease.getDate() + actualRemainingDays);
+            
+            if(amnesties.length > 0) {
+                let lastAmnestyDate = amnesties[amnesties.length - 1].date;
+                if(estimatedRelease < lastAmnestyDate && estimatedRelease > sentence) {
+                    estimatedRelease = lastAmnestyDate;
+                }
+            }
 
             const options = { year: 'numeric', month: 'long', day: 'numeric' };
-            document.getElementById('outOriginal').innerText = originalRelease.toLocaleDateString('en-GB', options);
-            document.getElementById('outEstimated').innerText = estimatedRelease.toLocaleDateString('en-GB', options);
+            const outOrigStr = originalRelease.toLocaleDateString('en-GB', options);
+            const outEstStr = estimatedRelease.toLocaleDateString('en-GB', options);
+
+            document.getElementById('outOriginal').innerText = outOrigStr;
+            document.getElementById('outEstimated').innerText = outEstStr;
+            
+            // 🖨️ Print ထုတ်ရန်အတွက် အချက်အလက်များ ပြင်ဆင်ခြင်း
+            const arrestPrint = arrest.toLocaleDateString('en-GB', options);
+            const sentencePrint = sentence.toLocaleDateString('en-GB', options);
+            const penaltyStr = `${years} နှစ် ${months > 0 ? months + ' လ' : ''}`;
+            
+            document.getElementById('printData').innerHTML = `
+                <b>ရဲဖမ်းရက်:</b> ${arrestPrint} <br>
+                <b>အမိန့်ချရက်:</b> ${sentencePrint} <br>
+                <b>ပြစ်ဒဏ်ကာလ:</b> ${penaltyStr} <br>
+                ${amnesties.length > 0 ? `<br><b>ရရှိခဲ့သော လွတ်ငြိမ်းခွင့်များ:</b><br>${amnestyPrintText}` : ''}
+            `;
+
+            // ရလဒ်ပြကွက် နှင့် Print ခလုတ်ကို ဖော်ပြမည်
             document.getElementById('resultBox').style.display = 'block';
+            document.getElementById('printBtn').style.display = 'block';
         }
     </script>
-    <!-- hitwebcounter Code START -->
-<a href="https://www.hitwebcounter.com/" target="_blank" rel="noopener" title="Styles Counter">
-<img src="https://www.hitwebcounter.com/counter/counter.php?page=21501673&amp;style=0030&amp;nbdigits=5&amp;type=page" alt="Styles Counter" decoding="async" style="border:0;max-width:100%;height:auto;" />
-</a>
-<br />
-<a href="https://www.hitwebcounter.com/" target="_blank" rel="noopener" style="font-family:Geneva, Arial, Helvetica, sans-serif;;font-size:9px;color:#76766B;text-decoration:none;font-weight:bold;">This Website Visits</a>
-<!-- hitwebcounter Code END -->
 </body>
 </html>

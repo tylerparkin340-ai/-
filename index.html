@@ -163,6 +163,7 @@
         }
 
         function calculate() {
+			gtag('event', 'calculate_button_clicked');
             const arrestStr = document.getElementById('arrestDate').value;
             const sentenceStr = document.getElementById('sentenceDate').value;
             const years = parseInt(document.getElementById('years').value) || 0;

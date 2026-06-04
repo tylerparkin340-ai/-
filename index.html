@@ -45,6 +45,7 @@
 
         .calc-btn { width: 100%; padding: 12px; margin-top: 25px; background-color: #2980b9; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold;}
         .print-btn { width: 100%; padding: 12px; margin-top: 15px; background-color: #8e44ad; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold;}
+        .reset-btn { width: 100%; padding: 12px; margin-top: 15px; background-color: #e67e22; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold;}
 
         .result { margin-top: 25px; padding: 15px; background-color: #e8f8f5; border-left: 5px solid #1abc9c; border-radius: 4px;}
         .result p { margin: 10px 0; font-size: 15px; color: #2c3e50;}
@@ -62,7 +63,7 @@
             .no-print { display: none !important; }
             .container { box-shadow: none; border: none; padding: 0; margin: 0; max-width: 100%; }
             #printSummary { display: block; margin-bottom: 20px; }
-            .watermark { color: rgba(0, 0, 0, 0.15) !important; font-size: 50px; z-index: 9999; } /* Print တွင် Watermark ကို အနည်းငယ်ပိုထင်းစေမည် */
+            .watermark { color: rgba(0, 0, 0, 0.15) !important; font-size: 50px; z-index: 9999; } 
             .result { border: 1px solid #000; border-left: 5px solid #1abc9c; page-break-inside: avoid; }
         }
     </style>
@@ -105,10 +106,17 @@
             <p><b>ခန့်မှန်း လွတ်မည့်ရက်စွဲ (အပြီးသတ်):</b> <span class="highlight" id="outEstimated"></span></p>
         </div>
 
+        <!-- 🖨️ Print နှင့် Reset ခလုတ်များ (ရလဒ်ထွက်မှသာ ပေါ်မည်) -->
         <button class="print-btn no-print" id="printBtn" style="display:none;" onclick="window.print()">🖨️ မှတ်တမ်းကို Print ထုတ်မည်</button>
+        <button class="reset-btn no-print" id="resetBtn" style="display:none;" onclick="resetForm()">🔄 အသစ်ပြန်တွက်မည် (Clear All)</button>
 
         <div class="disclaimer no-print">
             <strong>⚠️ အထူးသတိပေးချက် (Disclaimer)</strong>
+            
+            <span style="color: #27ae60; font-weight: bold; display: block; margin-bottom: 10px;">
+                🔒 ကိုယ်ရေးကိုယ်တာ လုံခြုံမှု: အသုံးပြုသူများ ဖြည့်သွင်းလိုက်သော မည်သည့် အချက်အလက်ကိုမျှ ကျွန်ုပ်တို့ဘက်မှ သိမ်းဆည်းထားခြင်း မရှိပါ။ တွက်ချက်မှုအားလုံးသည် သင့်စက်အတွင်း၌သာ လုံခြုံစွာ လုပ်ဆောင်သွားခြင်း ဖြစ်ပါသည်။
+            </span>
+
             ဤတွက်ချက်မှုသည် အစိုးရမဟုတ်သော ပြင်ပ Freelance တစ်ယောက်၏ ဖန်တီးမှုသာဖြစ်ပြီး၊ ကွဲလွဲမှုတစ်စုံတစ်ရာ ရှိလာခဲ့ပါက <b>အကျဉ်းဦးစီးဌာန၏ တွက်ချက်မှုသာ အတည်</b>ဖြစ်ပါသည်။ <br><br>
             ဤတွက်ချက်မှုသည် ပြင်ပတွင် ကျန်ရှိခဲ့သော မိသားစုများ စိတ်သက်သာရာ ရရှိနိုင်ရန်နှင့် မိမိတို့ မိသားစုဝင် မည်သည့်အချိန်တွင် ပြန်လာနိုင်မည်ကို အကြမ်းဖျဉ်း ခန့်မှန်းတွက်ချက်နိုင်ရန်အတွက်သာ ရည်ရွယ်ပါသည်။ တရားဝင် စာရွက်စာတမ်းအနေဖြင့်သော်လည်းကောင်း၊ အခြားရည်ရွယ်ချက် တစ်ခုခုဖြင့်သော်လည်းကောင်း အသုံးပြုရန် မဟုတ်ပါ။ <br><br>
             ထို့ကြောင့် ဤတွက်ချက်မှုကို အသုံးပြုခြင်းကြောင့် နောက်ကွယ်တွင် ဖြစ်ပေါ်လာနိုင်သော မည်သည့် ပြဿနာများကိုမဆို ဖန်တီးသူအနေဖြင့် တာဝန်ယူမည် မဟုတ်ကြောင်းနှင့် အသုံးပြုသူများအနေဖြင့် မိမိ၏ ကိုယ်ပိုင်ဆုံးဖြတ်ချက်၊ တာဝန်ယူမှုတို့ဖြင့်သာ အသုံးပြုကြပါရန် အသိပေးအပ်ပါသည်။ <br><br>
@@ -124,7 +132,6 @@
     <script>
         // Page စဖွင့်ဖွင့်ချင်းမှာ ရှိပြီးသား အရေအတွက်ကိုသာ ယူပြမည် (Count မတက်စေပါ)
         window.onload = function() {
-            // Browser Cache ကို ကျော်ဖြတ်ပြီး Global Data ကို အမြဲလတ်ဆတ်စွာယူရန် cache: 'no-store' နှင့် timestamp (?t=) ထည့်သွင်းထားပါသည်
             const url = 'https://api.counterapi.dev/v1/mm_prison_calc/global_total_clicks?t=' + new Date().getTime();
             fetch(url, { method: 'GET', cache: 'no-store' })
                 .then(response => response.json())
@@ -163,7 +170,7 @@
         }
 
         function calculate() {
-			gtag('event', 'calculate_button_clicked');
+		gtag('event', 'calculate_button_clicked');
             const arrestStr = document.getElementById('arrestDate').value;
             const sentenceStr = document.getElementById('sentenceDate').value;
             const years = parseInt(document.getElementById('years').value) || 0;
@@ -177,7 +184,7 @@
                 return;
             }
 
-            // ⚠️ ရလဒ်တွက်ချက်မည် ခလုတ်နှိပ်မှသာ Counter ၁ ကြိမ် တက်စေမည့် Global စနစ် (Cache ရှင်းလင်းထားသည်)
+            // Global Counter ၁ ကြိမ် တက်စေမည့် စနစ်
             const countUrl = 'https://api.counterapi.dev/v1/mm_prison_calc/global_total_clicks/up?t=' + new Date().getTime();
             fetch(countUrl, { method: 'GET', cache: 'no-store' })
                 .then(response => response.json())
@@ -276,11 +283,28 @@
                 ${amnesties.length > 0 ? `<br><b>ရရှိခဲ့သော လွတ်ငြိမ်းခွင့်များ:</b><br>${amnestyPrintText}` : ''}
             `;
 
-            // ရလဒ်ပြကွက် နှင့် Print ခလုတ်ကို ဖော်ပြမည်
+            // ရလဒ်ပြကွက် နှင့် ခလုတ်များကို ဖော်ပြမည်
             document.getElementById('resultBox').style.display = 'block';
             document.getElementById('printBtn').style.display = 'block';
+            document.getElementById('resetBtn').style.display = 'block';
+        }
+
+        // 🔄 အသစ်ပြန်တွက်ရန် Data အားလုံးကို ရှင်းလင်းမည့် Function
+        function resetForm() {
+            document.getElementById('arrestDate').value = '';
+            document.getElementById('sentenceDate').value = '';
+            document.getElementById('years').value = '0';
+            document.getElementById('months').value = '0';
+            
+            document.getElementById('amnestyContainer').innerHTML = ''; // လွတ်ငြိမ်းခွင့် အကွက်များ ဖျက်မည်
+            document.getElementById('printData').innerHTML = ''; 
+            
+            document.getElementById('resultBox').style.display = 'none'; // ရလဒ်များကို ပြန်ဖျောက်မည်
+            document.getElementById('printBtn').style.display = 'none';
+            document.getElementById('resetBtn').style.display = 'none';
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' }); // စာမျက်နှာ အပေါ်ဆုံးသို့ ပြန်ဆွဲတင်မည်
         }
     </script>
-	<div align=center><a href='https://www.counter12.com'><img src='https://www.counter12.com/img-52bb74b9aD73dzD3-3.gif' border='0' alt='free counter'></a><script type='text/javascript' src='https://www.counter12.com/ad.js?id=52bb74b9aD73dzD3'></script></div>
 </body>
 </html>
